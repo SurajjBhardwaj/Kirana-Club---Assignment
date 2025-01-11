@@ -12,7 +12,7 @@ import ContestList from "./components/ContestList";
 import { fetchContests } from "./api";
 import ContestFilters from "./components/ContestFilters";
 import ContestGraph from "./components/ContentGraph";
-import DivisionPieChart from "./components/DivisionPieChart"; // Ensure correct import
+import DivisionPieChart from "./components/DivisionPieChart";
 
 function App() {
   const [contests, setContests] = useState([]);
@@ -52,23 +52,46 @@ function App() {
   return (
     <Page title="Codeforces Contest Dashboard">
       <Layout>
+        {/* Contest Filters Section */}
         <Layout.Section>
           <Card>
-            <ContestFilters filters={filters} setFilters={setFilters} />
+            {loading ? (
+              <SkeletonPage title="Filters" primaryAction>
+                <SkeletonBodyText lines={2} />
+              </SkeletonPage>
+            ) : (
+              <ContestFilters filters={filters} setFilters={setFilters} />
+            )}
           </Card>
         </Layout.Section>
+
+        {/* Contest List Section */}
         <Layout.Section>
           <Card>
-            <ContestList
-              contests={filteredContests}
-              loading={loading}
-              error={error}
-            />
+            {loading ? (
+              <SkeletonPage title="Contests" primaryAction>
+                <SkeletonBodyText lines={10} />
+              </SkeletonPage>
+            ) : (
+              <ContestList
+                contests={filteredContests}
+                loading={loading}
+                error={error}
+              />
+            )}
           </Card>
         </Layout.Section>
+
+        {/* Contest Graph Section */}
         <Layout.Section>
           <Card>
-            <div style={{ display: "flex", justifyContent: "flex-end", padding: "16px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                padding: "16px",
+              }}
+            >
               <ButtonGroup segmented>
                 <Button onClick={() => setGraphView("bar")}>Bar Chart</Button>
                 <Button onClick={() => setGraphView("line")}>Line Chart</Button>
@@ -76,24 +99,58 @@ function App() {
               </ButtonGroup>
             </div>
             {loading ? (
-              <SkeletonPage primaryAction>
-                <Card sectioned>
-                  <SkeletonBodyText />
-                </Card>
-              </SkeletonPage>
+              <div style={{ padding: "16px" }}>
+                {/* Y-Axis skeleton */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    gap: "8px",
+                  }}
+                >
+                  {Array.from({ length: 10 }).map((_, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        width: "20px",
+                        height: `${(index + 1) * 20}px`,
+                        backgroundColor: "#f4f6f8",
+                        borderRadius: "4px",
+                      }}
+                    ></div>
+                  ))}
+                </div>
+                <SkeletonBodyText lines={1} />
+              </div>
             ) : (
               <ContestGraph contests={filteredContests} view={graphView} />
             )}
           </Card>
         </Layout.Section>
+
+        {/* Division Pie Chart Section */}
         <Layout.Section>
           <Card>
             {loading ? (
-              <SkeletonPage primaryAction>
-                <Card sectioned>
-                  <SkeletonBodyText />
-                </Card>
-              </SkeletonPage>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "200px", // Adjust the height to match your layout
+                }}
+              >
+                <div
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "50%",
+                    background: "conic-gradient(#f4f6f8 25%, transparent 25%)",
+                    border: "8px solid #f4f6f8",
+                    animation: "spin 1.5s linear infinite",
+                  }}
+                />
+              </div>
             ) : (
               <DivisionPieChart contests={filteredContests} />
             )}

@@ -5,6 +5,7 @@ import {
   SkeletonPage,
   SkeletonBodyText,
   Card,
+  SkeletonDisplayText,
 } from "@shopify/polaris";
 
 function ContestList({ contests, loading, error }) {
@@ -13,10 +14,42 @@ function ContestList({ contests, loading, error }) {
 
   if (loading) {
     return (
-      <SkeletonPage primaryAction>
+      <SkeletonPage title="Contest List" primaryAction>
         <Card sectioned>
-          <SkeletonBodyText />
+          <SkeletonDisplayText size="medium" />
+          <SkeletonBodyText lines={3} />
         </Card>
+        <Card>
+          <div style={{ padding: "16px" }}>
+            <SkeletonBodyText lines={1} />
+            {Array.from({ length: pageSize }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f4f6f8",
+                }}
+              >
+                <SkeletonBodyText lines={1} style={{ width: "15%" }} />
+                <SkeletonBodyText lines={1} style={{ width: "30%" }} />
+                <SkeletonBodyText lines={1} style={{ width: "20%" }} />
+                <SkeletonBodyText lines={1} style={{ width: "15%" }} />
+                <SkeletonBodyText lines={1} style={{ width: "20%" }} />
+              </div>
+            ))}
+          </div>
+        </Card>
+        <div
+          style={{
+            marginTop: "16px",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <SkeletonBodyText lines={1} style={{ width: "100px" }} />
+        </div>
       </SkeletonPage>
     );
   }
