@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Page, Layout, Card, SkeletonPage, SkeletonBodyText } from "@shopify/polaris";
+import {
+  Page,
+  Layout,
+  Card,
+  SkeletonPage,
+  SkeletonBodyText,
+  Button,
+  ButtonGroup,
+} from "@shopify/polaris";
 import ContestList from "./components/ContestList";
 import { fetchContests } from "./api";
 import ContestFilters from "./components/ContestFilters";
 import ContestGraph from "./components/ContentGraph";
+import DivisionPieChart from "./components/DivisionPieChart"; // Ensure correct import
 
 function App() {
   const [contests, setContests] = useState([]);
@@ -11,6 +20,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ type: "", search: "" });
+  const [graphView, setGraphView] = useState("bar");
 
   useEffect(() => {
     const getContests = async () => {
@@ -58,6 +68,13 @@ function App() {
         </Layout.Section>
         <Layout.Section>
           <Card>
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: "16px" }}>
+              <ButtonGroup segmented>
+                <Button onClick={() => setGraphView("bar")}>Bar Chart</Button>
+                <Button onClick={() => setGraphView("line")}>Line Chart</Button>
+                <Button onClick={() => setGraphView("area")}>Area Chart</Button>
+              </ButtonGroup>
+            </div>
             {loading ? (
               <SkeletonPage primaryAction>
                 <Card sectioned>
@@ -65,7 +82,20 @@ function App() {
                 </Card>
               </SkeletonPage>
             ) : (
-              <ContestGraph contests={filteredContests} />
+              <ContestGraph contests={filteredContests} view={graphView} />
+            )}
+          </Card>
+        </Layout.Section>
+        <Layout.Section>
+          <Card>
+            {loading ? (
+              <SkeletonPage primaryAction>
+                <Card sectioned>
+                  <SkeletonBodyText />
+                </Card>
+              </SkeletonPage>
+            ) : (
+              <DivisionPieChart contests={filteredContests} />
             )}
           </Card>
         </Layout.Section>
