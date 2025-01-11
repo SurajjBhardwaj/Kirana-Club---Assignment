@@ -13,6 +13,7 @@ import { fetchContests } from "./api";
 import ContestFilters from "./components/ContestFilters";
 import ContestGraph from "./components/ContentGraph";
 import DivisionPieChart from "./components/DivisionPieChart";
+import { GraphSkalaton, PieChartSkeleton } from "./components/Skeletons";
 
 function App() {
   const [contests, setContests] = useState([]);
@@ -85,45 +86,32 @@ function App() {
         {/* Contest Graph Section */}
         <Layout.Section>
           <Card>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                padding: "16px",
-              }}
-            >
-              <ButtonGroup segmented>
-                <Button onClick={() => setGraphView("bar")}>Bar Chart</Button>
-                <Button onClick={() => setGraphView("line")}>Line Chart</Button>
-                <Button onClick={() => setGraphView("area")}>Area Chart</Button>
-              </ButtonGroup>
-            </div>
             {loading ? (
-              <div style={{ padding: "16px" }}>
-                {/* Y-Axis skeleton */}
+              <GraphSkalaton />
+            ) : (
+              <>
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "flex-end",
-                    gap: "8px",
+                    justifyContent: "flex-end",
+                    padding: "16px",
                   }}
                 >
-                  {Array.from({ length: 10 }).map((_, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        width: "20px",
-                        height: `${(index + 1) * 20}px`,
-                        backgroundColor: "#f4f6f8",
-                        borderRadius: "4px",
-                      }}
-                    ></div>
-                  ))}
+                  <ButtonGroup segmented>
+                    <Button onClick={() => setGraphView("bar")}>
+                      Bar Chart
+                    </Button>
+                    <Button onClick={() => setGraphView("line")}>
+                      Line Chart
+                    </Button>
+                    <Button onClick={() => setGraphView("area")}>
+                      Area Chart
+                    </Button>
+                  </ButtonGroup>
                 </div>
-                <SkeletonBodyText lines={1} />
-              </div>
-            ) : (
-              <ContestGraph contests={filteredContests} view={graphView} />
+
+                <ContestGraph contests={filteredContests} view={graphView} />
+              </>
             )}
           </Card>
         </Layout.Section>
@@ -132,25 +120,7 @@ function App() {
         <Layout.Section>
           <Card>
             {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "200px", // Adjust the height to match your layout
-                }}
-              >
-                <div
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "50%",
-                    background: "conic-gradient(#f4f6f8 25%, transparent 25%)",
-                    border: "8px solid #f4f6f8",
-                    animation: "spin 1.5s linear infinite",
-                  }}
-                />
-              </div>
+              <PieChartSkeleton />
             ) : (
               <DivisionPieChart contests={filteredContests} />
             )}
